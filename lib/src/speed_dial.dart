@@ -1,10 +1,11 @@
 import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import 'animated_child.dart';
-import 'global_key_extension.dart';
 import 'animated_floating_button.dart';
 import 'background_overlay.dart';
+import 'global_key_extension.dart';
 import 'speed_dial_child.dart';
 import 'speed_dial_direction.dart';
 
@@ -295,11 +296,9 @@ class _SpeedDialState extends State<SpeedDial>
 
   toggleOverlay() {
     if (_open) {
-      _controller.reverse().whenComplete(() {
-        overlayEntry?.remove();
-        if (widget.renderOverlay && backgroundOverlay!.mounted)
-          backgroundOverlay?.remove();
-      });
+      overlayEntry?.remove();
+      if (widget.renderOverlay && backgroundOverlay!.mounted)
+        backgroundOverlay?.remove();
     } else {
       if (_controller.isAnimating) {
         // overlayEntry?.remove();
@@ -312,19 +311,7 @@ class _SpeedDialState extends State<SpeedDial>
                 children: [
                   Positioned(
                       child: CompositedTransformFollower(
-                    followerAnchor: widget.direction.value == "Down"
-                        ? widget.switchLabelPosition
-                            ? Alignment.topLeft
-                            : Alignment.topRight
-                        : widget.direction.value == "Up"
-                            ? widget.switchLabelPosition
-                                ? Alignment.bottomLeft
-                                : Alignment.bottomRight
-                            : widget.direction.value == "Left"
-                                ? Alignment.centerRight
-                                : widget.direction.value == "Right"
-                                    ? Alignment.centerLeft
-                                    : Alignment.center,
+                    followerAnchor: Alignment.bottomRight,
                     offset: widget.direction.value == "Down"
                         ? Offset(
                             widget.switchLabelPosition
@@ -335,7 +322,8 @@ class _SpeedDialState extends State<SpeedDial>
                             ? Offset(
                                 widget.switchLabelPosition
                                     ? 0
-                                    : dialKey.globalPaintBounds!.size.width,
+                                    : dialKey.globalPaintBounds!.size.width *
+                                        2.7,
                                 0)
                             : widget.direction.value == "Left"
                                 ? Offset(-10.0,
@@ -395,7 +383,8 @@ class _SpeedDialState extends State<SpeedDial>
               closeManually: widget.closeManually,
               tooltip: widget.tooltip,
               shape: widget.shape,
-              onTap: _toggleChildren,
+              onTap: widget.onPress == null ? _toggleChildren : widget.onPress,
+              onTapOverlay: _toggleChildren,
               // (_open && !widget.closeManually) ? _toggleChildren : null,
               animation: _controller,
               color: widget.overlayColor ??
@@ -408,7 +397,7 @@ class _SpeedDialState extends State<SpeedDial>
 
       if (!mounted) return;
 
-      _controller.forward();
+      //_controller.forward();
       if (widget.renderOverlay) Overlay.of(context)!.insert(backgroundOverlay!);
       Overlay.of(context)!.insert(overlayEntry!);
     }
@@ -528,9 +517,7 @@ class _SpeedDialState extends State<SpeedDial>
                 : null,
             elevation: widget.elevation,
             onLongPress: _toggleChildren,
-            callback: (_open || widget.onPress == null)
-                ? _toggleChildren
-                : widget.onPress,
+            callback: widget.onPress == null ? _toggleChildren : widget.onPress,
             size: widget.buttonSize,
             label: widget.label != null ? label : null,
             child: child,

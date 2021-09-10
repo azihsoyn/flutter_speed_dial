@@ -103,30 +103,24 @@ class AnimatedChild extends AnimatedWidget {
       );
     }
 
-    Widget button = ScaleTransition(
-        scale: animation,
-        child: FloatingActionButton(
-          key: btnKey,
-          heroTag: heroTag,
-          onPressed: _performAction,
-          backgroundColor:
-              backgroundColor ?? (dark ? Colors.grey[800] : Colors.grey[50]),
-          foregroundColor:
-              foregroundColor ?? (dark ? Colors.white : Colors.black),
-          elevation: elevation ?? 6.0,
-          child: child,
-          shape: shape,
-        ));
+    Widget button = FloatingActionButton(
+      key: btnKey,
+      heroTag: heroTag,
+      onPressed: _performAction,
+      backgroundColor:
+          backgroundColor ?? (dark ? Colors.grey[800] : Colors.grey[50]),
+      foregroundColor: foregroundColor ?? (dark ? Colors.white : Colors.black),
+      elevation: elevation ?? 6.0,
+      child: child,
+      shape: shape,
+    );
 
     List<Widget> children = [
       if (label != null || labelWidget != null)
-        ScaleTransition(
-          scale: animation,
-          child: Container(
-            padding: (child == null) ? EdgeInsets.symmetric(vertical: 8) : null,
-            key: (child == null) ? btnKey : null,
-            child: buildLabel(),
-          ),
+        Container(
+          padding: (child == null) ? EdgeInsets.symmetric(vertical: 8) : null,
+          key: (child == null) ? btnKey : null,
+          child: buildLabel(),
         ),
       if (child != null)
         Container(

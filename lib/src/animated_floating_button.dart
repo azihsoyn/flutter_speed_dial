@@ -40,7 +40,8 @@ class AnimatedFloatingButton extends StatefulWidget {
   _AnimatedFloatingButtonState createState() => _AnimatedFloatingButtonState();
 }
 
-class _AnimatedFloatingButtonState extends State<AnimatedFloatingButton> {
+class _AnimatedFloatingButtonState extends State<AnimatedFloatingButton>
+    with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return widget.dialRoot == null
@@ -84,6 +85,7 @@ class _AnimatedFloatingButtonState extends State<AnimatedFloatingButton> {
         : AnimatedSize(
             duration: Duration(milliseconds: 150),
             curve: widget.curve,
+            vsync: this,
             child: Container(
               child: Container(
                 child: widget.visible

@@ -2,6 +2,7 @@ library flutter_speed_dial;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+
 import 'global_key_extension.dart';
 
 class BackgroundOverlay extends AnimatedWidget {
@@ -11,12 +12,14 @@ class BackgroundOverlay extends AnimatedWidget {
   final LayerLink layerLink;
   final ShapeBorder shape;
   final VoidCallback? onTap;
+  final VoidCallback? onTapOverlay;
   final bool closeManually;
   final String? tooltip;
 
   BackgroundOverlay({
     Key? key,
     this.onTap,
+    this.onTapOverlay,
     required this.shape,
     required Animation<double> animation,
     required this.dialKey,
@@ -36,7 +39,7 @@ class BackgroundOverlay extends AnimatedWidget {
           fit: StackFit.expand,
           children: [
             GestureDetector(
-              onTap: closeManually ? null : onTap,
+              onTap: closeManually ? null : onTapOverlay,
               child: Container(
                 decoration: BoxDecoration(
                     color: color, backgroundBlendMode: BlendMode.dstOut),
