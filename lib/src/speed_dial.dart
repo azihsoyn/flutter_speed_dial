@@ -84,6 +84,8 @@ class SpeedDial extends StatefulWidget {
   /// If true overlay is rendered, no matter if closeManually is true or false.
   final bool renderOverlay;
 
+  final Widget? customOverlayEntryWidget;
+
   /// Open or close the dial via a notification
   final ValueNotifier<bool>? openCloseDial;
 
@@ -167,6 +169,7 @@ class SpeedDial extends StatefulWidget {
     this.childPadding = const EdgeInsets.symmetric(vertical: 5),
     this.spaceBetweenChildren,
     this.spacing,
+    this.customOverlayEntryWidget,
   }) : super(key: key);
 
   @override
@@ -182,6 +185,7 @@ class _SpeedDialState extends State<SpeedDial>
   bool _open = false;
   OverlayEntry? overlayEntry;
   OverlayEntry? backgroundOverlay;
+  OverlayEntry? customOverlayEntry;
   LayerLink _layerLink = LayerLink();
   final dialKey = GlobalKey<State<StatefulWidget>>();
 
@@ -296,9 +300,12 @@ class _SpeedDialState extends State<SpeedDial>
 
   toggleOverlay() {
     if (_open) {
-      overlayEntry?.remove();
-      if (widget.renderOverlay && backgroundOverlay!.mounted)
-        backgroundOverlay?.remove();
+      _controller.reverse().whenComplete(() {
+        customOverlayEntry?.remove();
+        overlayEntry?.remove();
+        if (widget.renderOverlay && backgroundOverlay!.mounted)
+          backgroundOverlay?.remove();
+      });
     } else {
       if (_controller.isAnimating) {
         // overlayEntry?.remove();
@@ -311,7 +318,19 @@ class _SpeedDialState extends State<SpeedDial>
                 children: [
                   Positioned(
                       child: CompositedTransformFollower(
-                    followerAnchor: Alignment.bottomRight,
+                    followerAnchor: widget.direction.value == "Down"
+                        ? widget.switchLabelPosition
+                            ? Alignment.topLeft
+                            : Alignment.topRight
+                        : widget.direction.value == "Up"
+                            ? widget.switchLabelPosition
+                                ? Alignment.bottomLeft
+                                : Alignment.bottomRight
+                            : widget.direction.value == "Left"
+                                ? Alignment.centerRight
+                                : widget.direction.value == "Right"
+                                    ? Alignment.centerLeft
+                                    : Alignment.center,
                     offset: widget.direction.value == "Down"
                         ? Offset(
                             widget.switchLabelPosition
@@ -322,9 +341,8 @@ class _SpeedDialState extends State<SpeedDial>
                             ? Offset(
                                 widget.switchLabelPosition
                                     ? 0
-                                    : dialKey.globalPaintBounds!.size.width *
-                                        2.7,
-                                0)
+                                    : dialKey.globalPaintBounds!.size.width,
+                                56)
                             : widget.direction.value == "Left"
                                 ? Offset(-10.0,
                                     dialKey.globalPaintBounds!.size.height / 2)
@@ -366,7 +384,7 @@ class _SpeedDialState extends State<SpeedDial>
                           children: widget.direction.value == "Down" ||
                                   widget.direction.value == "Right"
                               ? _getChildrenList().reversed.toList()
-                              : _getChildrenList(),
+                              : [..._getChildrenList()],
                         ),
                       ),
                     ),
@@ -397,7 +415,7 @@ class _SpeedDialState extends State<SpeedDial>
 
       if (!mounted) return;
 
-      //_controller.forward();
+      _controller.forward();
       if (widget.renderOverlay) Overlay.of(context)!.insert(backgroundOverlay!);
       Overlay.of(context)!.insert(overlayEntry!);
     }

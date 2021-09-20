@@ -360,6 +360,13 @@ class _MyHomePageState extends State<MyHomePage> {
           // childMargin: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           children: [
             SpeedDialChild(
+              child: null,
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
+              label: 'Zero',
+              onTap: () => print("ZERO CHILD"),
+            ),
+            SpeedDialChild(
               child: !rmicons ? Icon(Icons.accessibility) : null,
               backgroundColor: Colors.red,
               foregroundColor: Colors.white,

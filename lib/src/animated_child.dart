@@ -103,24 +103,49 @@ class AnimatedChild extends AnimatedWidget {
       );
     }
 
-    Widget button = FloatingActionButton(
-      key: btnKey,
-      heroTag: heroTag,
-      onPressed: _performAction,
-      backgroundColor:
-          backgroundColor ?? (dark ? Colors.grey[800] : Colors.grey[50]),
-      foregroundColor: foregroundColor ?? (dark ? Colors.white : Colors.black),
-      elevation: elevation ?? 6.0,
-      child: child,
-      shape: shape,
-    );
+    Widget button = ScaleTransition(
+        scale: animation,
+        child: FloatingActionButton(
+          key: btnKey,
+          heroTag: heroTag,
+          onPressed: _performAction,
+          backgroundColor:
+              backgroundColor ?? (dark ? Colors.grey[800] : Colors.grey[50]),
+          foregroundColor:
+              foregroundColor ?? (dark ? Colors.white : Colors.black),
+          elevation: elevation ?? 6.0,
+          child: child,
+          shape: shape,
+        ));
+
+    Widget nullButon = ScaleTransition(
+        scale: animation,
+        child: FloatingActionButton(
+          key: btnKey,
+          heroTag: heroTag,
+          onPressed: _performAction,
+          backgroundColor: Colors.transparent,
+          foregroundColor: Colors.transparent,
+          elevation: 0,
+          child: null,
+          shape: shape,
+        ));
 
     List<Widget> children = [
       if (label != null || labelWidget != null)
+        ScaleTransition(
+          scale: animation,
+          child: Container(
+            padding: (child == null) ? EdgeInsets.symmetric(vertical: 8) : null,
+            key: (child == null) ? btnKey : null,
+            child: buildLabel(),
+          ),
+        ),
+      if (child == null)
         Container(
-          padding: (child == null) ? EdgeInsets.symmetric(vertical: 8) : null,
-          key: (child == null) ? btnKey : null,
-          child: buildLabel(),
+          padding: childPadding,
+          height: buttonSize,
+          width: buttonSize,
         ),
       if (child != null)
         Container(
